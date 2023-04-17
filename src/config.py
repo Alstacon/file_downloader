@@ -17,11 +17,14 @@ DB_MODELS = [
 ]
 
 TORTOISE_ORM = {
-    "connections": {"default": DB_URL},
-    "apps": {
-        "models": {
-            "models": DB_MODELS,
-            "default_connection": "default",
+    'connections': {'default': DB_URL},
+    'apps': {
+        'models': {
+            'models': DB_MODELS,
+            'default_connection': 'default',
         },
     },
 }
+
+
+API_TOKEN = os.environ.get('API_TOKEN')

@@ -1,3 +1,4 @@
+from src.config import API_TOKEN
 from src.file.schemas import FileSchema, file_pydentic
 from src.models import File
 
@@ -15,3 +16,9 @@ async def get_files_list():
 async def get_file(uuid):
     file_item = File.get(uuid=uuid)
     return await file_pydentic.from_queryset_single(file_item)
+
+
+async def check_token(token: str | None):
+    if token != API_TOKEN:
+        return False
+    return True

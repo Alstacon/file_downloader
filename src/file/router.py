@@ -1,12 +1,16 @@
-from fastapi import APIRouter
+from typing import Annotated
+
+from fastapi import APIRouter, Depends
 from pydantic.types import UUID
+from starlette.responses import FileResponse
 
 from src.file.schemas import FileSchema
-from src.file.service import create_file, get_files_list, get_file
+from src.file.service import create_file, get_files_list, check_token
+from src.models import File
 
 router = APIRouter(
     prefix='/api/file',
-    tags=['File']
+    tags=['File'],
 )
 
 
@@ -31,10 +35,9 @@ async def get_file_list():
 
 
 @router.get('/{uuid}')
-async def get_file_page(uuid: UUID):
+async def get_file_page(uuid: UUID, token: Annotated[str, Depends(check_token)]):
     """Получение файла по uuid"""
-    file = await get_file(uuid)
-    return {
-        'status': 'ok',
-        'data': file
-    }
+    file_item = await File.get(uuid=uuid)
+    if token:
+        return FileResponse(file_item.path, media_type='application/octest-stream', filename=file_item.name)
+    return FileResponse(file_item.blur_path, media_type='application/octest-stream', filename=file_item.name)
